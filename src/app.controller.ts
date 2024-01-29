@@ -26,17 +26,4 @@ export class AppController {
     this.fruits.push(fruit);
     return { message: 'Fruit created.' };
   }
-
-  @Put(':fruitId')
-  updateFruit(
-    @Body() fruit: { name: string },
-    @Param('fruitId') fruitId: string,
-  ) {
-    return { message: `Fruit ${fruitId} updated.` };
-  }
-
-  @Delete(':fruitId')
-  deleteFruit(@Param('fruitId') fruitId: string) {
-    return { message: `Fruit ${fruitId} deleted.` };
-  }
 }

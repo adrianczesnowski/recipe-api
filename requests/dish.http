@@ -1,0 +1,10 @@
+GET localhost:3000/dishes
+
+###
+PUT localhost:3000/dishes
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Test"
+}

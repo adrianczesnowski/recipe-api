@@ -8,3 +8,13 @@ Content-Type: application/json
   "id": 1,
   "name": "Test"
 }
+
+
+###
+POST localhost:3000/dishes
+Content-Type: application/json
+
+{
+  "id": 2,
+  "name": "Test"
+}

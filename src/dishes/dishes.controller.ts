@@ -3,11 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  NotFoundException,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
-import { Dish } from './dish.model';
+import { Dish } from './Dish';
 import { UpdateDishDTO } from './dto/update-dish.dto';
 import { CreateDishDTO } from './dto/create-dish.dto';
 
@@ -40,7 +42,10 @@ export class DishesController {
   @Put()
   updateOne(@Body() dish: UpdateDishDTO) {
     const dishToUpdate = this.dishes.find((d) => d.id === Number(dish.id));
-    if (dishToUpdate) {
+
+    if (!dishToUpdate) {
+      throw new HttpException('Dish not found', 404);
+    } else {
       Object.assign(dishToUpdate, dish);
     }
     return dishToUpdate;
@@ -48,6 +53,10 @@ export class DishesController {
 
   @Delete(':id')
   deleteOne(@Param('id') dishId: string) {
+    const dishToRemove = this.dishes.find((d) => d.id === Number(dishId));
+    if (!dishToRemove) {
+      throw new NotFoundException('Dish not found.');
+    }
     this.dishes = this.dishes.filter((dishEl) => dishEl.id !== Number(dishId));
 
     return { dishId };

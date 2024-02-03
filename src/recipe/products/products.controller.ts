@@ -11,17 +11,17 @@ import {
 import { CreateProductDTO } from './dto/create-product.dto';
 import { UpdateProductDTO } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
-import { DishesService } from '../dishes/dishes.service';
 
 @Controller('products')
 export class ProductsController {
-  private productsService = new ProductsService();
+  private productsService: ProductsService;
 
-  constructor(private dishesService: DishesService) {}
+  constructor(productsService: ProductsService) {
+    this.productsService = productsService;
+  }
 
   @Post()
   createOne(@Body() product: CreateProductDTO) {
-    this.dishesService.getOneById(product.dishId);
     return this.productsService.create(product);
   }
 

@@ -2,61 +2,37 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Dish } from './Dish';
 import { CreateDishDTO } from './dto/create-dish.dto';
 import { UpdateDishDTO } from './dto/update-dish.dto';
-import { ProductsService } from '../products/products.service';
 
 @Injectable()
 export class DishesService {
-  private trackId = 1;
-
-  constructor(private productService: ProductsService) {}
-
-  private dishes: Dish[] = [
-    {
-      id: this.trackId++,
-      name: 'Fish & chips',
-      servings: 4,
-      description: 'Yummy',
-      products: [],
-    },
-  ];
-
-  getOneById(id: number) {
-    const dish = this.dishes.find((d) => d.id === id);
+  async getOneById(id: number): Promise<Dish> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const dish = await Dish.findOne({ id });
     if (!dish) {
       throw new NotFoundException('Not found');
     }
-
-    return {
-      ...dish,
-      products: this.productService.getAllForDishId(id),
-    };
+    return dish;
   }
 
-  create(dish: CreateDishDTO) {
-    const newDish: Dish = {
-      id: this.trackId++,
-      products: [],
-      ...dish,
-    };
-    this.dishes.push(newDish);
+  create(dish: CreateDishDTO): Promise<Dish> {
+    const newDish = new Dish();
+    Object.assign(newDish, dish);
+    return newDish.save();
   }
 
-  read(): readonly Dish[] {
-    return this.dishes.map((d) => {
-      return {
-        ...d,
-        products: this.productService.getAllForDishId(d.id),
-      };
-    });
+  read(): Promise<Dish[]> {
+    return Dish.find();
   }
 
-  update(dish: UpdateDishDTO) {
-    const dishToUpdate = this.getOneById(dish.id);
+  async update(dish: UpdateDishDTO): Promise<Dish> {
+    const dishToUpdate = await this.getOneById(dish.id);
     Object.assign(dishToUpdate, dish);
+    return dishToUpdate.save();
   }
 
-  delete(dishId: number) {
-    this.getOneById(dishId);
-    this.dishes = this.dishes.filter((dishEl) => dishEl.id !== dishId);
+  async delete(dishId: number): Promise<Dish> {
+    const dishToRemove = await this.getOneById(dishId);
+    return dishToRemove.remove();
   }
 }

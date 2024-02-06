@@ -20,9 +20,12 @@ export class ProductsService {
   }
 
   async getOneById(id: number): Promise<Product> {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const product = await Product.findOne({ id: id });
+    const product = await Product.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['dish'],
+    });
     if (!product) {
       throw new NotFoundException('Not found.');
     }
@@ -34,14 +37,15 @@ export class ProductsService {
   //   return Product.fin;
   // }
 
-  create(product: CreateProductDTO): Promise<Product> {
+  async create(product: CreateProductDTO): Promise<Product> {
     const newProduct = new Product();
     Object.assign(newProduct, product);
+    newProduct.dish = await this.dishesService.getOneById(product.dishId);
     return newProduct.save();
   }
 
   read(): Promise<Product[]> {
-    return Product.find();
+    return Product.find({ relations: ['dish'] });
   }
 
   async update(product: UpdateProductDTO): Promise<Product> {

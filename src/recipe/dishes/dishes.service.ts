@@ -6,9 +6,12 @@ import { UpdateDishDTO } from './dto/update-dish.dto';
 @Injectable()
 export class DishesService {
   async getOneById(id: number): Promise<Dish> {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const dish = await Dish.findOne({ id });
+    const dish = await Dish.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['products'],
+    });
     if (!dish) {
       throw new NotFoundException('Not found');
     }
@@ -22,7 +25,7 @@ export class DishesService {
   }
 
   read(): Promise<Dish[]> {
-    return Dish.find();
+    return Dish.find({ relations: ['products'] });
   }
 
   async update(dish: UpdateDishDTO): Promise<Dish> {

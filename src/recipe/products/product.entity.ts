@@ -5,7 +5,7 @@ import {
   BaseEntity,
   ManyToOne,
 } from 'typeorm';
-import { Dish } from '../dishes/Dish';
+import { Dish } from '../dishes/dish.entity';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -21,6 +21,8 @@ export class Product extends BaseEntity {
   @Column({ type: 'decimal' })
   amount: number;
 
-  @ManyToOne(() => Dish, (dish: Dish) => dish.products, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Dish, (dish: Dish) => dish.products, {
+    onDelete: 'CASCADE',
+  })
   dish: Dish;
 }

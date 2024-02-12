@@ -4,8 +4,8 @@ import { ProductsController } from './products/products.controller';
 import { DishesService } from './dishes/dishes.service';
 import { ProductsService } from './products/products.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './products/Products';
-import { Dish } from './dishes/Dish';
+import { Product } from './products/product.entity';
+import { Dish } from './dishes/dish.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product, Dish])],
